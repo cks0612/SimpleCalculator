@@ -11,23 +11,64 @@ namespace SimpleCalculator
         string operation = "";
         List<double> numbers = new List<double>();
         List<string> operators = new List<string>();
-        
+
+
+        private string DisplayOperator(string op)
+        {
+            return op switch
+            {
+                "*" => "×",
+                "/" => "÷",
+                _ => op
+            };
+        }
+
 
         private void NumberInput(string num)
         {
-            currentInput += num;
+            currentInput += num;        
             txtbx2.Text = currentInput; 
+
+            
+            if (txtbx1.Text.Length == 0 || "+-*/".Contains(txtbx1.Text.Last()))
+            {
+            
+                txtbx1.Text += currentInput;
+            }
+            else
+            {
+            
+                int i = txtbx1.Text.Length - 1;
+                while (i >= 0 && Char.IsDigit(txtbx1.Text[i]))
+                    i--;
+                txtbx1.Text = txtbx1.Text.Substring(0, i + 1) + currentInput;
+            }
         }
 
         private void OperatorInput(string op)
         {
             if (currentInput == "") return;
 
+            
             numbers.Add(double.Parse(currentInput));
             operators.Add(op);
 
-            txtbx1.Text += currentInput + " " + op + " ";
+            
+            int removeLength = currentInput.Length;
+            if (txtbx1.Text.Length >= removeLength)
+                txtbx1.Text = txtbx1.Text.Substring(0, txtbx1.Text.Length - removeLength);
+
+            
+            string displayOp = op;
+            if (op == "*") displayOp = "×";
+            else if (op == "/") displayOp = "÷";
+
+            
+            txtbx1.Text += currentInput + " " + displayOp + " ";
+
+            
             currentInput = "";
+          
         }
 
 
@@ -54,17 +95,58 @@ namespace SimpleCalculator
 
         private void CEbtn_Click(object sender, EventArgs e)
         {
+            
+            currentInput = "";
+            txtbx2.Text = "";
 
+            
+            txtbx1.Text = "";
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                txtbx1.Text += numbers[i].ToString();
+                if (i < operators.Count)
+                    txtbx1.Text += " " + DisplayOperator(operators[i]) + " ";
+            }
+            
         }
-
         private void Cbtn_Click(object sender, EventArgs e)
         {
-
+            currentInput = "";
+            numbers.Clear();
+            operators.Clear();
+            txtbx1.Text = "";
+            txtbx2.Text = "";
         }
 
         private void Delbtn_Click(object sender, EventArgs e)
         {
+            if (currentInput.Length > 0)
+            {
+                
+                currentInput = currentInput.Substring(0, currentInput.Length - 1);
+                txtbx2.Text = currentInput;
+            }
+            else if (operators.Count > 0)
+            {
+                
+                operators.RemoveAt(operators.Count - 1);
+                
+                currentInput = numbers[numbers.Count - 1].ToString();
+                numbers.RemoveAt(numbers.Count - 1);
+                txtbx2.Text = currentInput;
+            }
 
+            
+            txtbx1.Text = "";
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                txtbx1.Text += numbers[i].ToString();
+                if (i < operators.Count)
+                    txtbx1.Text += " " + DisplayOperator(operators[i]) + " ";
+            }
+
+            if (currentInput != "")
+                txtbx1.Text += currentInput;
         }
 
         private void dvbtn_Click(object sender, EventArgs e)
@@ -124,21 +206,15 @@ namespace SimpleCalculator
 
         private void rstbtn_Click(object sender, EventArgs e)
         {
-            if (currentInput == "") return;
+            if (currentInput != "")
+                numbers.Add(double.Parse(currentInput));
 
-            numbers.Add(double.Parse(currentInput));
-
-            // 1단계: * / 먼저 처리
+            
             for (int i = 0; i < operators.Count; i++)
             {
                 if (operators[i] == "*" || operators[i] == "/")
                 {
-                    double result = 0;
-                    if (operators[i] == "*")
-                        result = numbers[i] * numbers[i + 1];
-                    else
-                        result = numbers[i] / numbers[i + 1];
-
+                    double result = operators[i] == "*" ? numbers[i] * numbers[i + 1] : numbers[i] / numbers[i + 1];
                     numbers[i] = result;
                     numbers.RemoveAt(i + 1);
                     operators.RemoveAt(i);
@@ -146,20 +222,15 @@ namespace SimpleCalculator
                 }
             }
 
-            // 2단계: + - 처리
+            
             double finalResult = numbers[0];
             for (int i = 0; i < operators.Count; i++)
-            {
-                if (operators[i] == "+")
-                    finalResult += numbers[i + 1];
-                else
-                    finalResult -= numbers[i + 1];
-            }
+                finalResult = operators[i] == "+" ? finalResult + numbers[i + 1] : finalResult - numbers[i + 1];
 
-            txtbx1.Text += currentInput + " = " + finalResult;
+            txtbx1.Text += " = " + finalResult;
             txtbx2.Text = finalResult.ToString();
 
-            // 다음 계산을 위해 초기화
+            
             numbers.Clear();
             operators.Clear();
             currentInput = finalResult.ToString();

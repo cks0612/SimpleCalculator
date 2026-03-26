@@ -66,17 +66,19 @@
             // 
             // txtbx1
             // 
+            txtbx1.Font = new Font("한컴 말랑말랑 Regular", 12F, FontStyle.Regular, GraphicsUnit.Point, 129);
             txtbx1.Location = new Point(34, 121);
             txtbx1.Name = "txtbx1";
-            txtbx1.Size = new Size(375, 23);
+            txtbx1.Size = new Size(375, 28);
             txtbx1.TabIndex = 1;
             txtbx1.TextChanged += txtbx1_TextChanged;
             // 
             // txtbx2
             // 
+            txtbx2.Font = new Font("한컴 말랑말랑 Regular", 12F, FontStyle.Regular, GraphicsUnit.Point, 129);
             txtbx2.Location = new Point(34, 171);
             txtbx2.Name = "txtbx2";
-            txtbx2.Size = new Size(375, 23);
+            txtbx2.Size = new Size(375, 28);
             txtbx2.TabIndex = 2;
             txtbx2.TextChanged += txtbx2_TextChanged;
             // 
