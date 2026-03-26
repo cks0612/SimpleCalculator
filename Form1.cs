@@ -123,6 +123,7 @@ namespace SimpleCalculator
             if (currentInput.Length > 0)
             {
                 
+
                 currentInput = currentInput.Substring(0, currentInput.Length - 1);
                 txtbx2.Text = currentInput;
             }
